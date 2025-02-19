@@ -8,7 +8,6 @@ const path = require('path');
 const app = express();
 const PORT = 3000;
 
-// Configurando conexão com MongoDB
 mongoose.connect('mongodb://localhost:27017/file_uploads', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -24,7 +23,6 @@ const FileSchema = new mongoose.Schema({
 
 const FileModel = mongoose.model('File', FileSchema);
 
-// Configurando armazenamento com multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/');
@@ -36,10 +34,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// Middleware para processar JSON
 app.use(express.json());
 
-// Endpoint para upload de arquivos
 app.post('/upload', upload.single('file'), async (req, res) => {
   try {
     const { file } = req;
@@ -56,7 +52,6 @@ app.post('/upload', upload.single('file'), async (req, res) => {
   }
 });
 
-// Endpoint para processar arquivos (exemplo: conversão para maiúsculas)
 app.post('/process/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -89,7 +84,6 @@ app.post('/process/:id', async (req, res) => {
   }
 });
 
-// Endpoint para listar arquivos
 app.get('/files', async (req, res) => {
   try {
     const files = await FileModel.find();
@@ -99,10 +93,9 @@ app.get('/files', async (req, res) => {
   }
 });
 
-// Servindo arquivos estáticos para download
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Iniciando o servidor
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
